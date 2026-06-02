@@ -12,6 +12,11 @@ export const metadata: Metadata = {
   title: "BNI Emprendedores del Desierto Insights",
   description:
     "Aprendizaje práctico semanal para aplicar en tu negocio — Capítulo Emprendedores del Desierto.",
+  icons: {
+    icon: [{ url: "/bni-favicon.svg", type: "image/svg+xml" }],
+    shortcut: "/bni-favicon.svg",
+    apple: "/bni-favicon.svg",
+  },
 };
 
 export default function RootLayout({
