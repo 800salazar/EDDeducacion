@@ -24,7 +24,7 @@ export function MiembroSelector({
           name="miembro_id"
           defaultValue=""
           required
-          className="h-12 flex-1 rounded-xl border border-black/10 bg-white px-4 text-base text-ink shadow-sm outline-none transition focus:border-bni focus:ring-2 focus:ring-bni/20"
+          className="h-12 w-full min-w-0 flex-1 rounded-xl border border-black/10 bg-white px-4 text-base text-ink shadow-sm outline-none transition focus:border-bni focus:ring-2 focus:ring-bni/20"
         >
           <option value="" disabled>
             Selecciona tu nombre…

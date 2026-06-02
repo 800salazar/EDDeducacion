@@ -34,7 +34,7 @@ export default async function PortalPage({
           </h1>
           <p className="mt-3 text-[15px] leading-relaxed text-ink/60">
             Consulta los segmentos del capítulo, lee resúmenes ejecutivos y
-            recibe ideas accionables según tu giro. Sin contraseñas.
+            recibe ideas accionables según tu giro.
           </p>
 
           <div className="mt-7">
