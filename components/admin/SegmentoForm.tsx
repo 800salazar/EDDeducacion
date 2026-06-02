@@ -1,4 +1,6 @@
 import type { Segmento } from "@/lib/types";
+import { parseIdeasClave } from "@/lib/ideas-clave";
+import { IdeasClaveInputs } from "@/components/admin/IdeasClaveInputs";
 
 const inputCls =
   "w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm text-ink shadow-sm outline-none transition focus:border-bni focus:ring-2 focus:ring-bni/20";
@@ -12,6 +14,7 @@ export function SegmentoForm({
   segmento?: Segmento | null;
 }) {
   const hoy = new Date().toISOString().slice(0, 10);
+  const ideasIniciales = construirIdeasIniciales(segmento?.ideas_clave);
 
   return (
     <form action={action} className="space-y-5">
@@ -51,15 +54,6 @@ export function SegmentoForm({
           />
         </Campo>
 
-        <Campo label="Tema / categoría">
-          <input
-            name="tema"
-            defaultValue={segmento?.tema ?? ""}
-            placeholder="Ej. Referrals, Networking…"
-            className={inputCls}
-          />
-        </Campo>
-
         <Campo label="Fecha">
           <input
             type="date"
@@ -91,13 +85,7 @@ export function SegmentoForm({
       </Campo>
 
       <Campo label="Ideas clave (opcional)">
-        <textarea
-          name="ideas_clave"
-          rows={4}
-          defaultValue={segmento?.ideas_clave ?? ""}
-          placeholder={"• Idea 1\n• Idea 2\n• Idea 3"}
-          className={inputCls}
-        />
+        <IdeasClaveInputs initialIdeas={ideasIniciales} />
       </Campo>
 
       <Campo label="Transcript completo (opcional)">
@@ -191,4 +179,15 @@ function ArchivoActual({ url, etiqueta }: { url: string; etiqueta: string }) {
       Ver {etiqueta} (subir uno nuevo lo reemplaza)
     </a>
   );
+}
+
+function construirIdeasIniciales(ideasClave: string | null | undefined): string[] {
+  const ideas = parseIdeasClave(ideasClave);
+
+  const minCampos = 3;
+  if (ideas.length >= minCampos) return ideas;
+  return [
+    ...ideas,
+    ...Array.from({ length: minCampos - ideas.length }, () => ""),
+  ];
 }

@@ -8,6 +8,7 @@ import {
   getSegmento,
 } from "@/lib/data";
 import { fechaLarga } from "@/lib/format";
+import { parseIdeasClave } from "@/lib/ideas-clave";
 import { getMiembroActual } from "@/lib/sesion-miembro";
 
 export default async function SegmentoDetallePage({
@@ -24,6 +25,7 @@ export default async function SegmentoDetallePage({
     segmento.id,
     miembro?.categoria ?? null
   );
+  const ideasClave = parseIdeasClave(segmento.ideas_clave);
 
   const urlWhatsApp = await construirLinkWhatsApp(segmento.titulo, segmento.id);
 
@@ -68,17 +70,23 @@ export default async function SegmentoDetallePage({
 
         {/* Aplicación por giro: el bloque más importante */}
         <div className="mt-6">
-          <AplicacionGiro miembro={miembro} aplicacion={aplicacion} />
+          <AplicacionGiro
+            miembro={miembro}
+            aplicacion={aplicacion}
+            segmento={segmento}
+          />
         </div>
 
-        {segmento.ideas_clave && (
+        {ideasClave.length > 0 && (
           <section className="mt-6 rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/40">
               Ideas clave
             </h2>
-            <div className="prosa mt-2 text-[15px] text-ink/85">
-              {segmento.ideas_clave}
-            </div>
+            <ul className="mt-3 list-disc space-y-1 pl-5 text-[15px] text-ink/85">
+              {ideasClave.map((idea, idx) => (
+                <li key={`${idx}-${idea.slice(0, 16)}`}>{idea}</li>
+              ))}
+            </ul>
           </section>
         )}
 

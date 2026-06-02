@@ -9,6 +9,7 @@ import {
   passwordValida,
 } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { parseIdeasClave, serializarIdeasClave } from "@/lib/ideas-clave";
 
 const BUCKET = "media";
 const MAX_BYTES = 50 * 1024 * 1024; // 50 MB
@@ -48,6 +49,33 @@ async function exigirAdmin() {
 function texto(formData: FormData, campo: string): string | null {
   const v = String(formData.get(campo) ?? "").trim();
   return v === "" ? null : v;
+}
+
+function ideasClaveDesdeFormData(formData: FormData): string | null {
+  const ideas = formData
+    .getAll("ideas_clave_item")
+    .map((v) => String(v ?? "").trim())
+    .filter(Boolean);
+
+  if (ideas.length > 0) {
+    return serializarIdeasClave(ideas);
+  }
+
+  // Compatibilidad con payloads viejos si existiera textarea único.
+  return serializarIdeasClave(parseIdeasClave(texto(formData, "ideas_clave")));
+}
+
+function categoriaDesdeGiro(giro: string): string {
+  return (
+    giro
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/&/g, " y ")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "general"
+  );
 }
 
 function refrescarPublico() {
@@ -94,10 +122,9 @@ export async function crearSegmento(formData: FormData) {
     .insert({
       titulo: texto(formData, "titulo") ?? "Sin título",
       expositor: texto(formData, "expositor"),
-      tema: texto(formData, "tema"),
       fecha: texto(formData, "fecha") ?? new Date().toISOString().slice(0, 10),
       resumen: texto(formData, "resumen"),
-      ideas_clave: texto(formData, "ideas_clave"),
+      ideas_clave: ideasClaveDesdeFormData(formData),
       transcript: texto(formData, "transcript"),
       video_url: texto(formData, "video_url"),
       slides_url: slidesUrl,
@@ -126,10 +153,9 @@ export async function actualizarSegmento(formData: FormData) {
     .update({
       titulo: texto(formData, "titulo") ?? "Sin título",
       expositor: texto(formData, "expositor"),
-      tema: texto(formData, "tema"),
       fecha: texto(formData, "fecha") ?? new Date().toISOString().slice(0, 10),
       resumen: texto(formData, "resumen"),
-      ideas_clave: texto(formData, "ideas_clave"),
+      ideas_clave: ideasClaveDesdeFormData(formData),
       transcript: texto(formData, "transcript"),
       video_url: texto(formData, "video_url"),
       // Si subió archivo nuevo, reemplaza; si no, conserva el actual.
@@ -201,13 +227,27 @@ export async function eliminarAplicacion(formData: FormData) {
 export async function crearMiembro(formData: FormData) {
   await exigirAdmin();
   const supabase = createAdminClient();
+
+  const nombre = texto(formData, "nombre") ?? "Sin nombre";
+  const giro = texto(formData, "giro") ?? "General";
+
+  const { data: ultimo, error: errorOrden } = await supabase
+    .from("miembros")
+    .select("orden")
+    .order("orden", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (errorOrden) throw errorOrden;
+
+  const siguienteOrden = ((ultimo as { orden?: number } | null)?.orden ?? 0) + 1;
+
   const { error } = await supabase.from("miembros").insert({
-    nombre: texto(formData, "nombre") ?? "Sin nombre",
-    empresa: texto(formData, "empresa"),
-    giro: texto(formData, "giro") ?? "General",
-    categoria: (texto(formData, "categoria") ?? "general").toLowerCase(),
-    orden: Number(formData.get("orden") ?? 0) || 0,
-    activo: formData.get("activo") === "on",
+    nombre,
+    empresa: null,
+    giro,
+    categoria: categoriaDesdeGiro(giro),
+    orden: siguienteOrden,
+    activo: true,
   });
   if (error) throw error;
 
@@ -220,15 +260,16 @@ export async function actualizarMiembro(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) throw new Error("Falta id");
   const supabase = createAdminClient();
+
+  const nombre = texto(formData, "nombre") ?? "Sin nombre";
+  const giro = texto(formData, "giro") ?? "General";
+
   const { error } = await supabase
     .from("miembros")
     .update({
-      nombre: texto(formData, "nombre") ?? "Sin nombre",
-      empresa: texto(formData, "empresa"),
-      giro: texto(formData, "giro") ?? "General",
-      categoria: (texto(formData, "categoria") ?? "general").toLowerCase(),
-      orden: Number(formData.get("orden") ?? 0) || 0,
-      activo: formData.get("activo") === "on",
+      nombre,
+      giro,
+      categoria: categoriaDesdeGiro(giro),
     })
     .eq("id", id);
   if (error) throw error;

@@ -1,9 +1,7 @@
 import Link from "next/link";
-import { AplicacionGiro } from "@/components/AplicacionGiro";
 import { SegmentoCard } from "@/components/SegmentoCard";
 import { SegmentoMedia } from "@/components/SegmentoMedia";
 import {
-  getAplicacionParaMiembro,
   getSegmentoDeLaSemana,
   getSegmentos,
 } from "@/lib/data";
@@ -16,12 +14,7 @@ export default async function InicioPage() {
     getSegmentoDeLaSemana(),
   ]);
 
-  const [aplicacion, todos] = await Promise.all([
-    semana
-      ? getAplicacionParaMiembro(semana.id, miembro?.categoria ?? null)
-      : Promise.resolve(null),
-    getSegmentos(),
-  ]);
+  const todos = await getSegmentos();
 
   const recientes = todos.filter((s) => s.id !== semana?.id).slice(0, 4);
   const primerNombre = miembro?.nombre.split(/\s+/)[0];
@@ -40,45 +33,37 @@ export default async function InicioPage() {
       {!semana ? (
         <EmptyState />
       ) : (
-        <div className="grid gap-6 lg:grid-cols-5">
-          {/* Hero: segmento de la semana */}
-          <section className="lg:col-span-3">
-            <article className="rounded-2xl border border-black/5 bg-white p-6 shadow-sm sm:p-7">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-bni px-3 py-1 text-xs font-semibold text-white">
-                Segmento de la semana
-              </span>
-              <h2 className="mt-4 text-xl font-bold leading-snug text-ink sm:text-2xl">
-                {semana.titulo}
-              </h2>
-              <p className="mt-1.5 text-sm text-ink/55">
-                {semana.expositor ? `${semana.expositor} · ` : ""}
-                {fechaLarga(semana.fecha)}
-              </p>
+        <section>
+          <article className="rounded-2xl border border-black/5 bg-white p-6 shadow-sm sm:p-7">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-bni px-3 py-1 text-xs font-semibold text-white">
+              Segmento de la semana
+            </span>
+            <h2 className="mt-4 text-xl font-bold leading-snug text-ink sm:text-2xl">
+              {semana.titulo}
+            </h2>
+            <p className="mt-1.5 text-sm text-ink/55">
+              {semana.expositor ? `${semana.expositor} · ` : ""}
+              {fechaLarga(semana.fecha)}
+            </p>
 
-              {semana.resumen && (
-                <div className="prosa mt-4 text-[15px] text-ink/80">
-                  {semana.resumen}
-                </div>
-              )}
-
-              <div className="mt-5">
-                <SegmentoMedia segmento={semana} />
+            {semana.resumen && (
+              <div className="prosa mt-4 text-[15px] text-ink/80">
+                {semana.resumen}
               </div>
+            )}
 
-              <Link
-                href={`/segmentos/${semana.id}`}
-                className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-ink px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-ink/90"
-              >
-                Ver segmento completo →
-              </Link>
-            </article>
-          </section>
+            <div className="mt-5">
+              <SegmentoMedia segmento={semana} />
+            </div>
 
-          {/* Aplicación por giro */}
-          <aside className="lg:col-span-2">
-            <AplicacionGiro miembro={miembro} aplicacion={aplicacion} />
-          </aside>
-        </div>
+            <Link
+              href={`/segmentos/${semana.id}`}
+              className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-ink px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-ink/90"
+            >
+              Ver segmento completo →
+            </Link>
+          </article>
+        </section>
       )}
 
       {recientes.length > 0 && (
