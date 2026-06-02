@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BotonEliminar } from "@/components/admin/BotonEliminar";
+import { BotonConfirmar } from "@/components/admin/BotonConfirmar";
 import {
   actualizarMiembro,
   crearMiembro,
@@ -95,49 +96,69 @@ export default async function AdminMiembrosPage() {
 
 function FilaMiembro({ miembro: m }: { miembro: Miembro }) {
   return (
-    <form
-      action={actualizarMiembro}
-      className="grid items-center gap-3 rounded-xl border border-black/5 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto]"
-    >
-      <input type="hidden" name="id" value={m.id} />
-      <input name="nombre" defaultValue={m.nombre} className={inputCls} />
-      <input
-        name="empresa"
-        defaultValue={m.empresa ?? ""}
-        placeholder="Empresa"
-        className={inputCls}
-      />
-      <input name="giro" defaultValue={m.giro} className={inputCls} />
-      <input name="categoria" defaultValue={m.categoria} className={inputCls} />
-      <div className="flex items-center gap-2">
-        <input
-          name="orden"
-          type="number"
-          defaultValue={m.orden}
-          className={inputCls + " w-16"}
-          title="Orden"
-        />
-        <label className="flex items-center gap-1.5 text-xs text-ink/60" title="Activo">
-          <input
-            type="checkbox"
-            name="activo"
-            defaultChecked={m.activo}
-            className="size-4 accent-[var(--color-bni)]"
+    <article className="rounded-xl border border-black/5 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="truncate text-base font-semibold text-ink">{m.nombre}</p>
+          <p className="truncate text-sm text-ink/70">{m.giro}</p>
+          <p className="mt-1 text-xs text-ink/50">
+            Categoría: <span className="font-medium">{m.categoria}</span> · Orden {m.orden} · {" "}
+            {m.activo ? "Activo" : "Inactivo"}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <details>
+            <summary className="cursor-pointer rounded-lg border border-black/10 px-3 py-2 text-sm font-medium text-ink/75 transition hover:bg-black/5">
+              Editar
+            </summary>
+            <div className="mt-3 min-w-[18rem] rounded-lg border border-black/10 bg-white p-3 sm:min-w-[24rem]">
+              <form action={actualizarMiembro} className="space-y-3">
+                <input type="hidden" name="id" value={m.id} />
+                <input name="nombre" defaultValue={m.nombre} className={inputCls} />
+                <input
+                  name="empresa"
+                  defaultValue={m.empresa ?? ""}
+                  placeholder="Empresa"
+                  className={inputCls}
+                />
+                <input name="giro" defaultValue={m.giro} className={inputCls} />
+                <input name="categoria" defaultValue={m.categoria} className={inputCls} />
+                <div className="flex items-center gap-3">
+                  <input
+                    name="orden"
+                    type="number"
+                    defaultValue={m.orden}
+                    className={inputCls + " w-20"}
+                    title="Orden"
+                  />
+                  <label className="flex items-center gap-1.5 text-sm text-ink/70" title="Activo">
+                    <input
+                      type="checkbox"
+                      name="activo"
+                      defaultChecked={m.activo}
+                      className="size-4 accent-[var(--color-bni)]"
+                    />
+                    Activo
+                  </label>
+                </div>
+                <BotonConfirmar
+                  label="Guardar cambios"
+                  mensaje={`¿Guardar cambios de ${m.nombre}?`}
+                  className="rounded-lg bg-ink px-3 py-2 text-sm font-semibold text-white transition hover:bg-ink/90"
+                />
+              </form>
+            </div>
+          </details>
+
+          <BotonEliminar
+            action={eliminarMiembro}
+            hidden={{ id: m.id }}
+            mensaje={`¿Eliminar a ${m.nombre}?`}
+            className="rounded-lg border border-bni/20 px-3 py-2 text-sm font-medium text-bni transition hover:bg-bni/10"
           />
-          Act.
-        </label>
-        <button
-          type="submit"
-          className="rounded-lg bg-ink px-3 py-2 text-sm font-semibold text-white transition hover:bg-ink/90"
-        >
-          Guardar
-        </button>
-        <BotonEliminar
-          action={eliminarMiembro}
-          hidden={{ id: m.id }}
-          mensaje={`¿Eliminar a ${m.nombre}?`}
-        />
+        </div>
       </div>
-    </form>
+    </article>
   );
 }

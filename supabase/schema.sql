@@ -103,11 +103,8 @@ create policy "lectura publica media"
 -- (La subida de archivos se hace desde el servidor con service_role.)
 
 -- ============================================================================
--- Datos de ejemplo (puedes borrarlos cuando agregues los reales desde /admin)
+-- Sin datos de ejemplo por defecto
+-- ----------------------------------------------------------------------------
+-- La carga inicial de miembros se hace desde /admin o vía importación CSV,
+-- para evitar duplicados con datos reales del capítulo.
 -- ============================================================================
-insert into public.miembros (nombre, empresa, giro, categoria, orden) values
-  ('Juan Pérez',     'Seguros del Norte',     'Agente de seguros',  'seguros',      1),
-  ('María López',    'Estudio LM Arquitectura','Arquitecta',         'arquitectura', 2),
-  ('Pedro Ramírez',  'Impulso Marketing',     'Marketing digital',  'marketing',    3),
-  ('Ana Torres',     'Torres Contadores',     'Contadora',          'contabilidad', 4)
-on conflict do nothing;
