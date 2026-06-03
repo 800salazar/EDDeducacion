@@ -113,7 +113,7 @@ export default async function SegmentoDetallePage({
             href={urlWhatsApp}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-95"
+            className="inline-flex items-center gap-2 rounded-xl bg-bni px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-bni-dark"
           >
             Compartir por WhatsApp
           </a>
@@ -131,6 +131,6 @@ async function construirLinkWhatsApp(
   const host = h.get("host") ?? "localhost:3000";
   const proto = h.get("x-forwarded-proto") ?? "http";
   const url = `${proto}://${host}/segmentos/${id}`;
-  const texto = `📌 ${titulo} — BNI EDD Insights\n${url}`;
+  const texto = `📌 ${titulo} — Educación\n${url}`;
   return `https://wa.me/?text=${encodeURIComponent(texto)}`;
 }

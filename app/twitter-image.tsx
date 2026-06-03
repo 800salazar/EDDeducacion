@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "BNI Emprendedores del Desierto Insights";
+export const alt = "Educación";
 export const size = {
 	width: 1200,
 	height: 630,
@@ -18,7 +18,7 @@ export default function TwitterImage() {
 					display: "flex",
 					flexDirection: "column",
 					justifyContent: "space-between",
-					background: "linear-gradient(120deg, #8f0b20 0%, #c8102e 48%, #e03c57 100%)",
+					background: "linear-gradient(120deg, #1f2937 0%, #4b5563 48%, #9ca3af 100%)",
 					color: "white",
 					padding: "56px 64px",
 					fontFamily: "Arial, sans-serif",
@@ -36,18 +36,12 @@ export default function TwitterImage() {
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
-							width: "92px",
+							width: "62px",
 							height: "62px",
-							borderRadius: "10px",
+							borderRadius: "999px",
 							background: "white",
-							color: "#c8102e",
-							fontSize: "36px",
-							fontWeight: 800,
-							letterSpacing: "-0.02em",
 						}}
-					>
-						BNI
-					</div>
+					/>
 					<div
 						style={{
 							display: "flex",
@@ -55,10 +49,8 @@ export default function TwitterImage() {
 							gap: "2px",
 						}}
 					>
-						<div style={{ fontSize: "20px", opacity: 0.9 }}>Capitulo</div>
-						<div style={{ fontSize: "42px", fontWeight: 700, lineHeight: 1.05 }}>
-							Emprendedores del Desierto
-						</div>
+						<div style={{ fontSize: "20px", opacity: 0.9 }}>Plataforma</div>
+						<div style={{ fontSize: "42px", fontWeight: 700, lineHeight: 1.05 }}>Educación</div>
 					</div>
 				</div>
 
@@ -78,7 +70,7 @@ export default function TwitterImage() {
 							letterSpacing: "-0.02em",
 						}}
 					>
-						Insights
+						Educación
 					</div>
 					<div
 						style={{

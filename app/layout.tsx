@@ -10,18 +10,18 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://edd-educacion.vercel.app"),
-  title: "BNI Emprendedores del Desierto Insights",
+  title: "Educación",
   description:
-    "Aprendizaje práctico semanal para aplicar en tu negocio — Capítulo Emprendedores del Desierto.",
+    "Aprendizaje práctico semanal para aplicar en tu negocio.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "BNI Emprendedores del Desierto Insights",
+    title: "Educación",
     description:
-      "Aprendizaje práctico semanal para aplicar en tu negocio — Capítulo Emprendedores del Desierto.",
+      "Aprendizaje práctico semanal para aplicar en tu negocio.",
     url: "/",
-    siteName: "BNI Emprendedores del Desierto Insights",
+    siteName: "Educación",
     locale: "es_MX",
     type: "website",
     images: [
@@ -29,21 +29,21 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "BNI Emprendedores del Desierto Insights",
+        alt: "Educación",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BNI Emprendedores del Desierto Insights",
+    title: "Educación",
     description:
-      "Aprendizaje práctico semanal para aplicar en tu negocio — Capítulo Emprendedores del Desierto.",
+      "Aprendizaje práctico semanal para aplicar en tu negocio.",
     images: ["/twitter-image"],
   },
   icons: {
-    icon: [{ url: "/bni-favicon.svg", type: "image/svg+xml" }],
-    shortcut: "/bni-favicon.svg",
-    apple: "/bni-favicon.svg",
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
 

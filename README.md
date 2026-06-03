@@ -1,4 +1,4 @@
-# BNI Emprendedores del Desierto Insights
+# Educación
 
 Plataforma ultra simple para que los miembros del capítulo consulten los
 segmentos semanales, lean resúmenes ejecutivos y reciban **ideas accionables
