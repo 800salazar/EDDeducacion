@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Branding BNI Emprendedores del Desierto Insights
+   Branding Educación
    Estilo: elegante, empresarial, minimalista.
-   Paleta base BNI: rojo oscuro, blanco, negro, gris claro.
+   Paleta base: tonos grises, blanco, negro.
    ============================================================ */
 @theme {
-  --color-bni: #c8102e;
-  --color-bni-dark: #9b0e22;
-  --color-bni-darker: #6b0a18;
+  --color-bni: #6b7280;
+  --color-bni-dark: #4b5563;
+  --color-bni-darker: #374151;
   --color-ink: #14151a;
 
   --font-sans:
