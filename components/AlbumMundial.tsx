@@ -24,6 +24,7 @@ export function AlbumMundial({
   const [ocupadoId, setOcupadoId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [compartiendo, setCompartiendo] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
   const [estampas, setEstampas] = useState<Record<string, EstampaVista>>(() =>
     Object.fromEntries(
       estampasIniciales.map((estampa) => [
@@ -40,6 +41,13 @@ export function AlbumMundial({
     () => objetivos.filter((objetivo) => estampas[objetivo.id]?.foto_url).length,
     [objetivos, estampas]
   );
+  const objetivosFiltrados = useMemo(() => {
+    const termino = normalizarTexto(busqueda.trim());
+    if (!termino) return objetivos;
+    return objetivos.filter((objetivo) =>
+      normalizarTexto(objetivo.nombre).includes(termino)
+    );
+  }, [busqueda, objetivos]);
   const total = objetivos.length;
   const porcentaje = total === 0 ? 0 : Math.round((completadas / total) * 100);
   const estampaSeleccionada = seleccionado
@@ -190,13 +198,36 @@ export function AlbumMundial({
         </p>
       )}
 
+      {total > 0 && (
+        <div className="mb-4 rounded-xl border border-black/10 bg-white p-3 shadow-sm">
+          <label
+            htmlFor="buscar-miembro"
+            className="mb-2 block text-sm font-medium text-ink/70"
+          >
+            Buscar miembro
+          </label>
+          <input
+            id="buscar-miembro"
+            type="search"
+            value={busqueda}
+            onChange={(event) => setBusqueda(event.target.value)}
+            placeholder="Escribe un nombre"
+            className="h-11 w-full rounded-lg border border-black/15 px-3 text-sm text-ink outline-none transition focus:border-[#175c3b]/50 focus:ring-2 focus:ring-[#175c3b]/20"
+          />
+        </div>
+      )}
+
       {total === 0 ? (
         <div className="rounded-2xl border border-dashed border-black/15 bg-white/60 p-8 text-center text-ink/55">
           No hay otros miembros activos todavía.
         </div>
+      ) : objetivosFiltrados.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-black/15 bg-white/60 p-8 text-center text-ink/55">
+          No encontramos miembros con ese nombre.
+        </div>
       ) : (
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {objetivos.map((objetivo) => {
+          {objetivosFiltrados.map((objetivo) => {
             const fotoUrl = estampas[objetivo.id]?.foto_url;
             const ocupado = ocupadoId === objetivo.id;
 
@@ -312,6 +343,13 @@ export function AlbumMundial({
       )}
     </div>
   );
+}
+
+function normalizarTexto(texto: string): string {
+  return texto
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 }
 
 function iniciales(nombre: string): string {
