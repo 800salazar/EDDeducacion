@@ -52,6 +52,12 @@ export function SiteHeader({ miembro }: { miembro: Miembro | null }) {
           >
             Historial
           </Link>
+          <Link
+            href="/album"
+            className="shrink-0 rounded-lg px-3 py-2 text-sm font-medium text-ink/70 transition hover:bg-black/5 hover:text-ink"
+          >
+            Mi Mundial
+          </Link>
         </nav>
       </div>
     </header>

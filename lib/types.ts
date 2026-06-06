@@ -34,3 +34,13 @@ export type Aplicacion = {
   contenido: string;
   created_at: string;
 };
+
+export type AlbumEstampa = {
+  id: string;
+  miembro_id: string;
+  objetivo_miembro_id: string;
+  foto_url: string;
+  storage_path: string;
+  created_at: string;
+  updated_at: string;
+};

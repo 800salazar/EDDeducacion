@@ -60,6 +60,24 @@ create table if not exists public.aplicaciones (
 
 create index if not exists aplicaciones_segmento_idx on public.aplicaciones (segmento_id);
 
+-- ---------- Tabla: album_estampas ----------
+-- Álbum mundialista de uno a unos. Cada miembro conserva una sola foto por
+-- cada otro miembro activo del capítulo.
+create table if not exists public.album_estampas (
+  id                  uuid primary key default gen_random_uuid(),
+  miembro_id          uuid not null references public.miembros(id) on delete cascade,
+  objetivo_miembro_id uuid not null references public.miembros(id) on delete cascade,
+  foto_url            text not null,
+  storage_path        text not null,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now(),
+  unique (miembro_id, objetivo_miembro_id),
+  check (miembro_id <> objetivo_miembro_id)
+);
+
+create index if not exists album_estampas_miembro_idx
+  on public.album_estampas (miembro_id);
+
 -- ============================================================================
 -- Row Level Security (RLS)
 -- ----------------------------------------------------------------------------
@@ -71,6 +89,7 @@ create index if not exists aplicaciones_segmento_idx on public.aplicaciones (seg
 alter table public.miembros     enable row level security;
 alter table public.segmentos    enable row level security;
 alter table public.aplicaciones enable row level security;
+alter table public.album_estampas enable row level security;
 
 -- Lectura pública (anon + authenticated)
 drop policy if exists "lectura publica miembros" on public.miembros;
@@ -84,6 +103,10 @@ create policy "lectura publica segmentos"
 drop policy if exists "lectura publica aplicaciones" on public.aplicaciones;
 create policy "lectura publica aplicaciones"
   on public.aplicaciones for select using (true);
+
+drop policy if exists "lectura publica album_estampas" on public.album_estampas;
+create policy "lectura publica album_estampas"
+  on public.album_estampas for select using (true);
 
 -- (No creamos policies de INSERT/UPDATE/DELETE: quedan bloqueadas para el público.
 --  El panel /admin escribe con service_role, que salta RLS.)
