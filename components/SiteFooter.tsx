@@ -7,14 +7,14 @@ export function SiteFooter() {
           Educación
         </span>
         <p className="text-sm font-medium text-white/95 sm:text-base">
-          tecnologia de{" "}
+          Desarrollado por {" "}
           <a
-            href="https://salazarconsulotres.com"
+            href="https://SalazarConsultores.com"
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold underline"
           >
-            SalazarConsulotres.com
+            SalazarConsultores.com
           </a>
         </p>
       </div>
