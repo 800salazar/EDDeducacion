@@ -11,10 +11,11 @@ const COOKIE = "edd_miembro";
 export async function setMiembroSeleccionado(id: string): Promise<void> {
   const store = await cookies();
   store.set(COOKIE, id, {
-    httpOnly: false, // no es secreto; solo recuerda quién eligió ser
+    httpOnly: true,
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 180, // 6 meses
+    maxAge: 60 * 60 * 24 * 400, // cerca del máximo que conservan navegadores modernos
+    secure: process.env.NODE_ENV === "production",
   });
 }
 
@@ -37,6 +38,7 @@ export async function getMiembroActual(): Promise<Miembro | null> {
     .from("miembros")
     .select("*")
     .eq("id", id)
+    .eq("activo", true)
     .maybeSingle();
   return (data as Miembro) ?? null;
 }

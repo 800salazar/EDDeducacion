@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { MiembroSelector } from "@/components/MiembroSelector";
 import { getMiembros } from "@/lib/data";
-import { getMiembroIdSeleccionado } from "@/lib/sesion-miembro";
+import { getMiembroActual } from "@/lib/sesion-miembro";
 
 export default async function PortalPage({
   searchParams,
@@ -11,7 +11,7 @@ export default async function PortalPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   // Si ya eligió miembro, va directo al contenido.
-  if (await getMiembroIdSeleccionado()) {
+  if (await getMiembroActual()) {
     redirect("/inicio");
   }
 
