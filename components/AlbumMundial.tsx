@@ -9,7 +9,6 @@ import {
 import type { AlbumEstampa, Miembro } from "@/lib/types";
 
 type EstampaVista = Pick<AlbumEstampa, "objetivo_miembro_id" | "foto_url">;
-const SEDE_2026 = "México · Estados Unidos · Canadá";
 
 export function AlbumMundial({
   miembro,
@@ -525,20 +524,18 @@ async function crearImagenAlbum({
   ctx.fillText("⚽ Mi Mundial de Uno a Unos", margin, 76);
   ctx.font = "500 30px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
   ctx.fillStyle = "rgba(255,255,255,0.82)";
-  ctx.fillText(
-    `Mundial 2026 · ${SEDE_2026} · ${miembro.nombre}`,
-    margin,
-    118
-  );
+  ctx.fillText(`Jugador: ${miembro.nombre}`, margin, 118);
 
-  const marcadorX = width - margin - 300;
-  dibujarRectRedondeado(ctx, marcadorX, 32, 300, 80, 22, "rgba(0,0,0,0.24)");
+  const marcadorX = width - margin - 380;
+  dibujarRectRedondeado(ctx, marcadorX, 32, 380, 80, 22, "rgba(0,0,0,0.24)");
   ctx.fillStyle = "#ffffff";
   ctx.textAlign = "center";
-  ctx.font = "800 42px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
-  ctx.fillText(`${completadas}/${total}`, marcadorX + 150, 72);
-  ctx.font = "700 20px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
-  ctx.fillText("completadas", marcadorX + 150, 100);
+  ctx.font = "800 34px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+  ctx.fillText(
+    `${completadas} de ${total} completadas`,
+    marcadorX + 190,
+    82
+  );
   ctx.textAlign = "left";
 
   const paisY = 162;
@@ -601,7 +598,13 @@ async function crearImagenAlbum({
 
   ctx.fillStyle = "#14151a";
   ctx.font = "500 24px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
-  ctx.fillText("Educación · Mundial 2026 ⚽", margin, height - 30);
+  ctx.textAlign = "right";
+  ctx.fillText(
+    "⚽ Tecnología de SalazarConsultores.com",
+    width - margin,
+    height - 30
+  );
+  ctx.textAlign = "left";
 
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, "image/jpeg", 0.9)
