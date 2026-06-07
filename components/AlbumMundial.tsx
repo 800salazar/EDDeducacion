@@ -9,6 +9,7 @@ import {
 import type { AlbumEstampa, Miembro } from "@/lib/types";
 
 type EstampaVista = Pick<AlbumEstampa, "objetivo_miembro_id" | "foto_url">;
+const SEDE_2026 = "México · Estados Unidos · Canadá";
 
 export function AlbumMundial({
   miembro,
@@ -153,19 +154,44 @@ export function AlbumMundial({
 
   return (
     <div>
-      <div className="mb-6 overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
-        <div className="bg-[#175c3b] px-5 py-5 text-white sm:px-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-6 overflow-hidden rounded-[1.35rem] border border-emerald-950/15 bg-[#0e442e] shadow-sm">
+        <div className="relative px-5 py-5 text-white sm:px-6">
+          <div
+            className="absolute inset-0 opacity-25"
+            style={{
+              backgroundImage:
+                "linear-gradient(90deg, rgba(255,255,255,0.16) 1px, transparent 1px), linear-gradient(0deg, rgba(255,255,255,0.12) 1px, transparent 1px), repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0 96px, transparent 96px 192px)",
+              backgroundSize: "42px 42px, 42px 42px, 192px 100%",
+            }}
+            aria-hidden
+          />
+          <div className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/25" />
+          <div className="absolute inset-y-8 left-5 w-16 rounded-r-full border-y-2 border-r-2 border-white/20" />
+          <div className="absolute inset-y-8 right-5 w-16 rounded-l-full border-y-2 border-l-2 border-white/20" />
+
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.08em] text-white/70">
-                Álbum mundialista
+              <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-white/85">
+                <span aria-hidden>⚽</span>
+                Mundial 2026
               </p>
-              <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
-                Mi Mundial de Uno a Unos
+              <h1 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">
+                Mi Mundial de Uno a Unos ⚽
               </h1>
+              <div className="mt-2 flex flex-wrap gap-2 text-xs font-black uppercase tracking-[0.04em]">
+                <span className="rounded-full bg-[#0b8f4d] px-2.5 py-1 text-white">
+                  México
+                </span>
+                <span className="rounded-full bg-[#174ea6] px-2.5 py-1 text-white">
+                  Estados Unidos
+                </span>
+                <span className="rounded-full bg-[#d71920] px-2.5 py-1 text-white">
+                  Canadá
+                </span>
+              </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="rounded-xl bg-white/10 px-3 py-2 text-right">
+              <div className="rounded-2xl border border-white/15 bg-black/20 px-3 py-2 text-right shadow-inner">
                 <p className="text-xl font-bold leading-none">
                   {completadas}/{total}
                 </p>
@@ -177,15 +203,15 @@ export function AlbumMundial({
                 type="button"
                 onClick={compartirAlbum}
                 disabled={compartiendo || total === 0}
-                className="h-11 rounded-xl bg-white px-4 text-sm font-semibold text-[#175c3b] transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-55"
+                className="h-11 rounded-xl bg-white px-4 text-sm font-black text-[#0e442e] shadow-sm transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-55"
               >
-                {compartiendo ? "Generando..." : "Compartir álbum"}
+                {compartiendo ? "Generando..." : "⚽ Compartir"}
               </button>
             </div>
           </div>
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15">
+          <div className="relative mt-4 h-3 overflow-hidden rounded-full border border-white/15 bg-black/25">
             <div
-              className="h-full rounded-full bg-white transition-[width]"
+              className="h-full rounded-full bg-[#f7f7f7] transition-[width]"
               style={{ width: `${porcentaje}%` }}
             />
           </div>
@@ -199,12 +225,12 @@ export function AlbumMundial({
       )}
 
       {total > 0 && (
-        <div className="mb-4 rounded-xl border border-black/10 bg-white p-3 shadow-sm">
+        <div className="mb-4 rounded-xl border border-emerald-950/10 bg-white p-3 shadow-sm">
           <label
             htmlFor="buscar-miembro"
-            className="mb-2 block text-sm font-medium text-ink/70"
+            className="mb-2 block text-sm font-bold text-ink/70"
           >
-            Buscar miembro
+            Buscar miembro ⚽
           </label>
           <input
             id="buscar-miembro"
@@ -212,7 +238,7 @@ export function AlbumMundial({
             value={busqueda}
             onChange={(event) => setBusqueda(event.target.value)}
             placeholder="Escribe un nombre"
-            className="h-11 w-full rounded-lg border border-black/15 px-3 text-sm text-ink outline-none transition focus:border-[#175c3b]/50 focus:ring-2 focus:ring-[#175c3b]/20"
+            className="h-11 w-full rounded-lg border border-emerald-950/15 px-3 text-sm text-ink outline-none transition focus:border-[#0e442e]/50 focus:ring-2 focus:ring-[#0e442e]/20"
           />
         </div>
       )}
@@ -239,7 +265,7 @@ export function AlbumMundial({
                   setSeleccionado(objetivo);
                   setError(null);
                 }}
-                className="group relative aspect-square overflow-hidden rounded-xl border border-black/10 bg-slate-200 text-left shadow-sm outline-none transition hover:-translate-y-0.5 hover:border-[#175c3b]/40 hover:shadow-md focus:ring-2 focus:ring-[#175c3b]/25"
+                className="group relative aspect-square overflow-hidden rounded-xl border border-emerald-950/15 bg-[#dbe8dc] text-left shadow-sm outline-none transition hover:-translate-y-0.5 hover:border-[#0e442e]/40 hover:shadow-md focus:ring-2 focus:ring-[#0e442e]/25"
               >
                 {fotoUrl ? (
                   <img
@@ -248,17 +274,30 @@ export function AlbumMundial({
                     className="size-full object-cover transition group-hover:scale-[1.03]"
                   />
                 ) : (
-                  <div className="grid size-full place-items-center bg-slate-200">
-                    <span className="text-3xl font-bold text-slate-300">
-                      {iniciales(objetivo.nombre)}
+                  <div className="relative grid size-full place-items-center bg-[#dbe8dc]">
+                    <div
+                      className="absolute inset-0 opacity-60"
+                      style={{
+                        backgroundImage:
+                          "repeating-linear-gradient(90deg, rgba(14,68,46,0.08) 0 38px, rgba(255,255,255,0.18) 38px 76px)",
+                      }}
+                      aria-hidden
+                    />
+                    <span className="relative text-center">
+                      <span className="block text-3xl" aria-hidden>
+                        ⚽
+                      </span>
+                      <span className="mt-1 block text-2xl font-black text-[#0e442e]/35">
+                        {iniciales(objetivo.nombre)}
+                      </span>
                     </span>
                   </div>
                 )}
                 <span
                   className={`absolute inset-x-0 bottom-0 flex min-h-12 items-center justify-center px-2 py-1.5 text-center text-xs font-semibold leading-tight ${
                     fotoUrl
-                      ? "bg-black/60 text-white"
-                      : "bg-white/90 text-ink/80"
+                      ? "bg-[#0e442e]/80 text-white"
+                      : "bg-white/90 text-[#0e442e]"
                   }`}
                 >
                   <span className="overflow-hidden [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
@@ -273,70 +312,101 @@ export function AlbumMundial({
 
       {seleccionado && (
         <div
-          className="fixed inset-0 z-40 flex items-end justify-center bg-black/45 px-4 py-4 sm:items-center"
+          className="fixed inset-0 z-40 flex items-end justify-center bg-black/55 px-4 py-4 sm:items-center"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-ink/50">Estampa</p>
-                <h2 className="truncate text-xl font-bold text-ink">
-                  {seleccionado.nombre}
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSeleccionado(null)}
-                className="grid size-9 shrink-0 place-items-center rounded-full border border-black/10 text-xl leading-none text-ink/60 transition hover:bg-black/5"
-                aria-label="Cerrar"
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="mt-4 aspect-square overflow-hidden rounded-xl bg-slate-200">
-              {estampaSeleccionada?.foto_url ? (
-                <img
-                  src={estampaSeleccionada.foto_url}
-                  alt=""
-                  className="size-full object-cover"
-                />
-              ) : (
-                <div className="grid size-full place-items-center text-5xl font-bold text-slate-300">
-                  {iniciales(seleccionado.nombre)}
+          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl">
+            <div className="relative bg-[#0e442e] px-5 py-4 text-white">
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(90deg, rgba(255,255,255,0.18) 0 44px, transparent 44px 88px)",
+                }}
+                aria-hidden
+              />
+              <div className="relative flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-sm font-black uppercase tracking-[0.08em] text-white/70">
+                    Estampa ⚽
+                  </p>
+                  <h2 className="truncate text-xl font-black">
+                    {seleccionado.nombre}
+                  </h2>
                 </div>
-              )}
-            </div>
-
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={onFotoSeleccionada}
-            />
-
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={() => inputRef.current?.click()}
-                disabled={ocupadoId === seleccionado.id}
-                className="h-11 rounded-xl bg-[#175c3b] px-4 text-sm font-semibold text-white transition hover:bg-[#12472e] disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
-              >
-                {estampaSeleccionada?.foto_url ? "Cambiar foto" : "Cargar foto"}
-              </button>
-
-              {estampaSeleccionada?.foto_url && (
                 <button
                   type="button"
-                  onClick={eliminarFoto}
-                  disabled={ocupadoId === seleccionado.id}
-                  className="h-11 rounded-xl border border-bni/20 px-4 text-sm font-semibold text-bni transition hover:bg-bni/10 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
+                  onClick={() => setSeleccionado(null)}
+                  className="grid size-9 shrink-0 place-items-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white transition hover:bg-white/20"
+                  aria-label="Cerrar"
                 >
-                  Eliminar foto
+                  ×
                 </button>
-              )}
+              </div>
+            </div>
+
+            <div className="p-5">
+              <div className="aspect-square overflow-hidden rounded-xl border border-emerald-950/15 bg-[#dbe8dc]">
+                {estampaSeleccionada?.foto_url ? (
+                  <img
+                    src={estampaSeleccionada.foto_url}
+                    alt=""
+                    className="size-full object-cover"
+                  />
+                ) : (
+                  <div className="relative grid size-full place-items-center">
+                    <div
+                      className="absolute inset-0 opacity-60"
+                      style={{
+                        backgroundImage:
+                          "repeating-linear-gradient(90deg, rgba(14,68,46,0.08) 0 52px, rgba(255,255,255,0.18) 52px 104px)",
+                      }}
+                      aria-hidden
+                    />
+                    <span className="relative text-center">
+                      <span className="block text-5xl" aria-hidden>
+                        ⚽
+                      </span>
+                      <span className="mt-2 block text-5xl font-black text-[#0e442e]/35">
+                        {iniciales(seleccionado.nombre)}
+                      </span>
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <input
+                ref={inputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={onFotoSeleccionada}
+              />
+
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => inputRef.current?.click()}
+                  disabled={ocupadoId === seleccionado.id}
+                  className="h-11 rounded-xl bg-[#0e442e] px-4 text-sm font-black text-white transition hover:bg-[#123927] disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
+                >
+                  {estampaSeleccionada?.foto_url
+                    ? "⚽ Cambiar foto"
+                    : "⚽ Cargar foto"}
+                </button>
+
+                {estampaSeleccionada?.foto_url && (
+                  <button
+                    type="button"
+                    onClick={eliminarFoto}
+                    disabled={ocupadoId === seleccionado.id}
+                    className="h-11 rounded-xl border border-[#d71920]/25 px-4 text-sm font-black text-[#b0151b] transition hover:bg-[#d71920]/10 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
+                  >
+                    Eliminar foto
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -414,10 +484,11 @@ async function crearImagenAlbum({
   const width = 1600;
   const margin = 72;
   const gap = 18;
-  const headerHeight = 176;
-  const footerHeight = 64;
+  const headerHeight = 220;
+  const footerHeight = 72;
   const tile = Math.floor((width - margin * 2 - gap * (cols - 1)) / cols);
-  const height = headerHeight + rows * tile + Math.max(0, rows - 1) * gap + footerHeight;
+  const height =
+    headerHeight + rows * tile + Math.max(0, rows - 1) * gap + footerHeight;
 
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -425,17 +496,60 @@ async function crearImagenAlbum({
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("No se pudo generar la imagen.");
 
-  ctx.fillStyle = "#f6f6f7";
+  ctx.fillStyle = "#eef4ed";
   ctx.fillRect(0, 0, width, height);
-  ctx.fillStyle = "#175c3b";
+
+  for (let x = 0; x < width; x += 150) {
+    ctx.fillStyle = Math.floor(x / 150) % 2 === 0 ? "#e5efe4" : "#f5f8f4";
+    ctx.fillRect(x, headerHeight - 8, 150, height - headerHeight + 8);
+  }
+
+  ctx.fillStyle = "#0e442e";
   ctx.fillRect(0, 0, width, 142);
+  for (let x = 0; x < width; x += 160) {
+    ctx.fillStyle = x / 160 % 2 === 0 ? "rgba(255,255,255,0.08)" : "transparent";
+    ctx.fillRect(x, 0, 160, 142);
+  }
+  ctx.strokeStyle = "rgba(255,255,255,0.22)";
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.arc(width / 2, 88, 64, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(width / 2, 0);
+  ctx.lineTo(width / 2, 142);
+  ctx.stroke();
 
   ctx.fillStyle = "#ffffff";
   ctx.font = "700 58px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
-  ctx.fillText("Mi Mundial de Uno a Unos", margin, 76);
+  ctx.fillText("⚽ Mi Mundial de Uno a Unos", margin, 76);
   ctx.font = "500 30px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
   ctx.fillStyle = "rgba(255,255,255,0.82)";
-  ctx.fillText(`${miembro.nombre} · ${completadas}/${total} completadas`, margin, 118);
+  ctx.fillText(
+    `Mundial 2026 · ${SEDE_2026} · ${miembro.nombre}`,
+    margin,
+    118
+  );
+
+  const marcadorX = width - margin - 300;
+  dibujarRectRedondeado(ctx, marcadorX, 32, 300, 80, 22, "rgba(0,0,0,0.24)");
+  ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "center";
+  ctx.font = "800 42px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+  ctx.fillText(`${completadas}/${total}`, marcadorX + 150, 72);
+  ctx.font = "700 20px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+  ctx.fillText("completadas", marcadorX + 150, 100);
+  ctx.textAlign = "left";
+
+  const paisY = 162;
+  dibujarRectRedondeado(ctx, margin, paisY, 142, 38, 18, "#0b8f4d");
+  dibujarRectRedondeado(ctx, margin + 154, paisY, 230, 38, 18, "#174ea6");
+  dibujarRectRedondeado(ctx, margin + 396, paisY, 142, 38, 18, "#d71920");
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "800 20px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+  ctx.fillText("México", margin + 34, paisY + 26);
+  ctx.fillText("Estados Unidos", margin + 180, paisY + 26);
+  ctx.fillText("Canadá", margin + 430, paisY + 26);
 
   objetivos.forEach((objetivo, index) => {
     const col = index % cols;
@@ -444,24 +558,41 @@ async function crearImagenAlbum({
     const y = headerHeight + row * (tile + gap);
     const img = imagenes.get(objetivo.id);
 
-    dibujarRectRedondeado(ctx, x, y, tile, tile, 18, img ? "#ffffff" : "#d8dde3");
+    dibujarRectRedondeado(
+      ctx,
+      x,
+      y,
+      tile,
+      tile,
+      18,
+      img ? "#ffffff" : "#dbe8dc"
+    );
     ctx.save();
     trazarRectRedondeado(ctx, x, y, tile, tile, 18);
     ctx.clip();
 
     if (img) {
       dibujarImagenCover(ctx, img, x, y, tile, tile);
-      ctx.fillStyle = "rgba(0,0,0,0.58)";
+      ctx.fillStyle = "rgba(14,68,46,0.78)";
     } else {
-      ctx.fillStyle = "#d8dde3";
-      ctx.fillRect(x, y, tile, tile);
+      for (let stripe = 0; stripe < tile; stripe += 44) {
+        ctx.fillStyle =
+          stripe / 44 % 2 === 0 ? "rgba(14,68,46,0.08)" : "rgba(255,255,255,0.24)";
+        ctx.fillRect(x + stripe, y, 44, tile);
+      }
+      ctx.fillStyle = "rgba(14,68,46,0.20)";
+      ctx.font = "700 44px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("⚽", x + tile / 2, y + tile / 2 - 12);
+      ctx.font = "800 42px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(iniciales(objetivo.nombre), x + tile / 2, y + tile / 2 + 42);
       ctx.fillStyle = "rgba(255,255,255,0.88)";
     }
 
     ctx.fillRect(x, y + tile - 58, tile, 58);
     ctx.restore();
 
-    ctx.fillStyle = img ? "#ffffff" : "#14151a";
+    ctx.fillStyle = img ? "#ffffff" : "#0e442e";
     ctx.textAlign = "center";
     ctx.font = "700 22px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
     dibujarNombre(ctx, objetivo.nombre, x + tile / 2, y + tile - 35, tile - 22);
@@ -470,7 +601,7 @@ async function crearImagenAlbum({
 
   ctx.fillStyle = "#14151a";
   ctx.font = "500 24px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
-  ctx.fillText("Educación · Álbum mundialista", margin, height - 28);
+  ctx.fillText("Educación · Mundial 2026 ⚽", margin, height - 30);
 
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, "image/jpeg", 0.9)
