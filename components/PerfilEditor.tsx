@@ -90,6 +90,7 @@ export function PerfilEditor({
   const [estado, setEstado] = useState<EstadoGuardado>(null);
   const [subiendoFoto, setSubiendoFoto] = useState(false);
   const [subiendoLogo, setSubiendoLogo] = useState(false);
+  const usaFormatoExterno = Boolean(valores.link_formato_uno_a_uno.trim());
 
   async function guardarCampo(campo: CampoPerfilEditable) {
     const resultado = await guardarConEstado(
@@ -300,11 +301,12 @@ export function PerfilEditor({
             accept="image/*"
             className="hidden"
             onChange={alSeleccionarFoto}
+            disabled={usaFormatoExterno}
           />
           <button
             type="button"
             onClick={() => inputFoto.current?.click()}
-            disabled={subiendoFoto}
+            disabled={subiendoFoto || usaFormatoExterno}
             className="min-h-10 px-2 text-sm font-semibold text-bni disabled:opacity-50"
           >
             {fotoUrl ? "Cambiar foto" : "Agregar foto"}
@@ -313,7 +315,7 @@ export function PerfilEditor({
             <button
               type="button"
               onClick={quitarFoto}
-              disabled={subiendoFoto}
+              disabled={subiendoFoto || usaFormatoExterno}
               className="min-h-10 px-2 text-sm font-medium text-ink/50 disabled:opacity-50"
             >
               Eliminar foto
@@ -333,11 +335,12 @@ export function PerfilEditor({
               accept="image/*"
               className="hidden"
               onChange={alSeleccionarLogo}
+              disabled={usaFormatoExterno}
             />
             <button
               type="button"
               onClick={() => inputLogo.current?.click()}
-              disabled={subiendoLogo}
+              disabled={subiendoLogo || usaFormatoExterno}
               className="mt-2 min-h-10 px-2 text-sm font-semibold text-bni disabled:opacity-50"
             >
               {logoUrl ? "Cambiar logo" : "Agregar logo"}
@@ -346,7 +349,7 @@ export function PerfilEditor({
               <button
                 type="button"
                 onClick={quitarLogo}
-                disabled={subiendoLogo}
+                disabled={subiendoLogo || usaFormatoExterno}
                 className="ml-1 min-h-10 px-2 text-sm font-medium text-ink/50 disabled:opacity-50"
               >
                 Eliminar
@@ -362,6 +365,7 @@ export function PerfilEditor({
             onChange={(valor) => setValores((actual) => ({ ...actual, usuario: valor }))}
             onBlur={guardarUsuario}
             placeholder="tu-usuario"
+            disabled={usaFormatoExterno}
           />
           <p className="pb-3 text-sm text-ink/50">/{valores.usuario || "tu-usuario"}</p>
         </div>
@@ -383,12 +387,14 @@ export function PerfilEditor({
               onChange={(event) => void guardarColor(event.target.value)}
               className="sr-only"
               aria-label="Elegir color personalizado"
+              disabled={usaFormatoExterno}
             />
           </label>
           {usaColorPersonalizado && (
             <button
               type="button"
               onClick={() => void guardarColor(null)}
+              disabled={usaFormatoExterno}
               className="min-h-11 px-2 text-sm font-semibold text-ink/60 transition hover:text-ink"
             >
               Usar color del sistema
@@ -422,6 +428,7 @@ export function PerfilEditor({
           multiline
           maxLength={500}
           placeholder="Comparte algo que quieras que otros conozcan de ti."
+          disabled={usaFormatoExterno}
         />
       </Seccion>
 
@@ -435,6 +442,7 @@ export function PerfilEditor({
               onChange={(valor) => actualizarValor(item.campo, valor, setValores)}
               onBlur={() => guardarCampo(item.campo)}
               placeholder={item.placeholder}
+              disabled={usaFormatoExterno}
             />
           ))}
         </div>
@@ -452,6 +460,7 @@ export function PerfilEditor({
               multiline
               maxLength={400}
               placeholder={`Escribe tus ${item.etiqueta.toLowerCase()}.`}
+              disabled={usaFormatoExterno}
             />
           ))}
         </div>
@@ -464,18 +473,21 @@ export function PerfilEditor({
             titulo="Clientes buscados"
             itemsIniciales={listas.clientes_buscados.map((item) => item.contenido)}
             notificar={setEstado}
+            disabled={usaFormatoExterno}
           />
           <ListaPerfil
             tipo="contactos"
             titulo="Redes de Contactos"
             itemsIniciales={listas.contactos.map((item) => item.contenido)}
             notificar={setEstado}
+            disabled={usaFormatoExterno}
           />
           <ListaPerfil
             tipo="mejores_clientes"
             titulo="Mis mejores clientes/ Casos de éxito"
             itemsIniciales={listas.mejores_clientes.map((item) => item.contenido)}
             notificar={setEstado}
+            disabled={usaFormatoExterno}
           />
         </div>
       </Seccion>
@@ -501,6 +513,7 @@ function Campo({
   type = "text",
   multiline = false,
   maxLength,
+  disabled = false,
 }: {
   etiqueta: string;
   value: string;
@@ -510,9 +523,10 @@ function Campo({
   type?: "text" | "url" | "tel";
   multiline?: boolean;
   maxLength?: number;
+  disabled?: boolean;
 }) {
   const className =
-    "w-full rounded-lg border border-black/10 bg-white px-3 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-ink/35 focus:border-bni focus:ring-2 focus:ring-bni/20";
+    "w-full rounded-lg border border-black/10 bg-white px-3 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-ink/35 focus:border-bni focus:ring-2 focus:ring-bni/20 disabled:cursor-not-allowed disabled:bg-black/[0.03] disabled:text-ink/45";
 
   return (
     <label className="block">
@@ -524,6 +538,7 @@ function Campo({
           onBlur={onBlur}
           placeholder={placeholder}
           maxLength={maxLength}
+          disabled={disabled}
           rows={5}
           className={`${className} resize-y`}
         />
@@ -535,6 +550,7 @@ function Campo({
           onBlur={onBlur}
           placeholder={placeholder}
           maxLength={maxLength}
+          disabled={disabled}
           className={className}
         />
       )}
@@ -547,11 +563,13 @@ function ListaPerfil({
   titulo,
   itemsIniciales,
   notificar,
+  disabled = false,
 }: {
   tipo: PerfilListaTipo;
   titulo: string;
   itemsIniciales: string[];
   notificar: (estado: EstadoGuardado) => void;
+  disabled?: boolean;
 }) {
   const [items, setItems] = useState<string[]>(
     itemsIniciales.length > 0 ? itemsIniciales : [""]
@@ -593,11 +611,13 @@ function ListaPerfil({
               onBlur={() => void guardar(items)}
               placeholder={`${titulo} ${index + 1}`}
               maxLength={180}
-              className="min-w-0 flex-1 rounded-lg border border-black/10 bg-white px-3 py-2 text-sm text-ink outline-none transition focus:border-bni focus:ring-2 focus:ring-bni/20"
+              disabled={disabled}
+              className="min-w-0 flex-1 rounded-lg border border-black/10 bg-white px-3 py-2 text-sm text-ink outline-none transition focus:border-bni focus:ring-2 focus:ring-bni/20 disabled:cursor-not-allowed disabled:bg-black/[0.03] disabled:text-ink/45"
             />
             <button
               type="button"
               onClick={() => quitar(index)}
+              disabled={disabled}
               className="grid size-10 place-items-center rounded-lg border border-black/10 text-ink/55 transition hover:bg-black/5"
               aria-label={`Quitar ${titulo}`}
             >
@@ -609,7 +629,8 @@ function ListaPerfil({
       <button
         type="button"
         onClick={agregar}
-        className="mt-3 text-sm font-semibold text-bni transition hover:text-bni-dark"
+        disabled={disabled}
+        className="mt-3 text-sm font-semibold text-bni transition hover:text-bni-dark disabled:cursor-not-allowed disabled:opacity-40"
       >
         + Agregar
       </button>
