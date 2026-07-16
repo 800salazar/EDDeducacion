@@ -59,6 +59,7 @@ export type PerfilMiembro = {
   instagram_url: string | null;
   linkedin_url: string | null;
   pagina_web_url: string | null;
+  telefono_contacto: string | null;
   acerca_de_mi: string | null;
   mascotas: string | null;
   familia: string | null;

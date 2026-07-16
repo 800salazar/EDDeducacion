@@ -30,6 +30,7 @@ export function PerfilPublico({ data }: { data: PerfilPublicoData }) {
         )}
         <h1 className="mt-5 text-3xl font-bold text-ink">{miembro.nombre}</h1>
         <p className="mt-1 text-base font-medium" style={{ color: colorPrincipal }}>{miembro.giro}</p>
+        <AccesosPerfil perfil={perfil} color={colorPrincipal} />
         {miembro.empresa && <p className="mt-1 text-sm text-ink/55">{miembro.empresa}</p>}
       </header>
 
@@ -69,8 +70,6 @@ export function PerfilPublico({ data }: { data: PerfilPublicoData }) {
               </div>
             </Seccion>
           )}
-
-          <RedesPerfil perfil={perfil} color={colorPrincipal} />
         </div>
       )}
     </article>
@@ -179,39 +178,75 @@ function ListaPublica({
   );
 }
 
-function RedesPerfil({
+type TipoAcceso = "facebook" | "instagram" | "linkedin" | "web" | "telefono" | "whatsapp";
+
+function AccesosPerfil({
   perfil,
   color,
 }: {
   perfil: PerfilPublicoData["perfil"];
   color: string;
 }) {
-  const redes = [
-    ["Facebook", perfil.facebook_url],
-    ["Instagram", perfil.instagram_url],
-    ["LinkedIn", perfil.linkedin_url],
-    ["Página web", perfil.pagina_web_url],
-  ].filter(([, url]) => Boolean(url));
-  if (redes.length === 0) return null;
+  const accesos: Array<{ nombre: string; href: string; tipo: TipoAcceso }> = [];
+  if (perfil.facebook_url) accesos.push({ nombre: "Facebook", href: perfil.facebook_url, tipo: "facebook" });
+  if (perfil.instagram_url) accesos.push({ nombre: "Instagram", href: perfil.instagram_url, tipo: "instagram" });
+  if (perfil.linkedin_url) accesos.push({ nombre: "LinkedIn", href: perfil.linkedin_url, tipo: "linkedin" });
+  if (perfil.pagina_web_url) accesos.push({ nombre: "Página web", href: perfil.pagina_web_url, tipo: "web" });
+  if (perfil.telefono_contacto) {
+    accesos.push({ nombre: "Llamar", href: `tel:${perfil.telefono_contacto}`, tipo: "telefono" });
+    accesos.push({
+      nombre: "WhatsApp",
+      href: enlaceWhatsApp(perfil.telefono_contacto),
+      tipo: "whatsapp",
+    });
+  }
+  if (accesos.length === 0) return null;
 
   return (
-    <Seccion titulo="Enlaces" color={color}>
-      <div className="flex flex-wrap gap-2">
-        {redes.map(([nombre, url]) => (
+    <div className="mt-3 flex flex-wrap justify-center gap-2">
+      {accesos.map(({ nombre, href, tipo }) => (
           <a
             key={nombre}
-            href={url ?? "#"}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-lg border px-3 py-2 text-sm font-semibold transition hover:bg-black/5"
-            style={{ borderColor: color, color }}
+            href={href}
+            target={tipo === "telefono" ? undefined : "_blank"}
+            rel={tipo === "telefono" ? undefined : "noreferrer"}
+            className="grid size-11 place-items-center rounded-full text-white shadow-sm transition hover:brightness-90 focus:outline-none focus:ring-2 focus:ring-offset-2"
+            style={{ backgroundColor: color, outlineColor: color }}
+            aria-label={nombre}
+            title={nombre}
           >
-            {nombre}
+            <IconoAcceso tipo={tipo} />
           </a>
-        ))}
-      </div>
-    </Seccion>
+      ))}
+    </div>
   );
+}
+
+function enlaceWhatsApp(telefono: string): string {
+  const soloNumeros = telefono.replace(/\D/g, "");
+  const numero = soloNumeros.length === 10 ? `52${soloNumeros}` : soloNumeros;
+  const mensaje = encodeURIComponent("Hola, te conoci en BNI y me interesa conocer tu negocio");
+  return `https://wa.me/${numero}?text=${mensaje}`;
+}
+
+function IconoAcceso({ tipo }: { tipo: TipoAcceso }) {
+  const clase = "size-5 fill-none stroke-current stroke-2";
+  if (tipo === "facebook") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4 fill-current"><path d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.6 1.7-1.6h1.8V3.8c-.3 0-1.4-.1-2.6-.1-2.6 0-4.4 1.6-4.4 4.5V10H7v3h3v8h3.5Z" /></svg>;
+  }
+  if (tipo === "instagram") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true" className={clase}><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".8" className="fill-current stroke-none" /></svg>;
+  }
+  if (tipo === "linkedin") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true" className={clase}><path d="M6 9v9M6 6v.01M10 18v-5a4 4 0 0 1 8 0v5M10 9v9" /></svg>;
+  }
+  if (tipo === "telefono") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true" className={clase}><path d="M5 4.5 8.2 3l2.1 4.8-2.2 1.5a14.3 14.3 0 0 0 6.6 6.6l1.5-2.2L21 16l-1.5 3.2c-.5 1-1.6 1.6-2.7 1.3C9.8 19 5 14.2 3.5 7.2 3.3 6.1 3.9 5 5 4.5Z" /></svg>;
+  }
+  if (tipo === "whatsapp") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true" className={clase}><path d="M20 11.6a8 8 0 0 1-11.9 7L4 20l1.4-4A8 8 0 1 1 20 11.6Z" /><path d="M9.2 8.2c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.2.1.4 0 .6l-.5.7c.5 1 1.3 1.8 2.4 2.4l.7-.5c.2-.1.4-.1.6 0l1.6.7c.3.1.4.3.4.5v.5c0 .3-.1.5-.5.7-.5.2-1.2.3-1.8.1-2.5-.9-4.5-2.9-5.4-5.4-.2-.6-.1-1.3.1-1.8Z" /></svg>;
+  }
+  return <svg viewBox="0 0 24 24" aria-hidden="true" className={clase}><circle cx="12" cy="12" r="8" /><path d="M4 12h16M12 4c2 2.2 3 4.9 3 8s-1 5.8-3 8c-2-2.2-3-4.9-3-8s1-5.8 3-8Z" /></svg>;
 }
 
 function iniciales(nombre: string): string {

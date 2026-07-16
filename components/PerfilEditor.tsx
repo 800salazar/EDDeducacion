@@ -29,6 +29,7 @@ const camposEnlaces: Array<{
   campo: CampoPerfilEditable;
   etiqueta: string;
   placeholder: string;
+  type?: "url" | "tel";
 }> = [
   {
     campo: "link_formato_uno_a_uno",
@@ -39,6 +40,7 @@ const camposEnlaces: Array<{
   { campo: "instagram_url", etiqueta: "Instagram", placeholder: "https://instagram.com/..." },
   { campo: "linkedin_url", etiqueta: "LinkedIn", placeholder: "https://linkedin.com/in/..." },
   { campo: "pagina_web_url", etiqueta: "Página web", placeholder: "https://..." },
+  { campo: "telefono_contacto", etiqueta: "Teléfono de contacto", placeholder: "614 123 4567", type: "tel" },
 ];
 
 const camposPersonales: Array<{
@@ -64,8 +66,8 @@ const camposHORLI: Array<{
 }> = [
   { campo: "habilidades", etiqueta: "Habilidades" },
   { campo: "objetivos", etiqueta: "Objetivos" },
-  { campo: "redes", etiqueta: "Redes" },
-  { campo: "logros", etiqueta: "Logros" },
+  { campo: "redes", etiqueta: "Redes de contactos" },
+  { campo: "logros", etiqueta: "Logros destacables" },
   { campo: "intereses", etiqueta: "Intereses" },
 ];
 
@@ -224,6 +226,27 @@ export function PerfilEditor({
     setSubiendoLogo(false);
   }
 
+  async function compartirPerfil() {
+    const url = `${window.location.origin}/${valores.usuario}`;
+    const contenido = {
+      title: `Perfil de ${miembro.nombre}`,
+      text: `Conoce el perfil de ${miembro.nombre} en Educación.`,
+      url,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(contenido);
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setEstado({ tipo: "guardado", texto: "Liga copiada" });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      setEstado({ tipo: "error", texto: "No se pudo compartir la liga." });
+    }
+  }
+
   return (
     <div className="mx-auto w-full max-w-4xl px-5 py-8 sm:py-10">
       <div className="flex flex-col gap-5 border-b border-black/10 pb-6 sm:flex-row sm:items-start sm:justify-between">
@@ -232,14 +255,23 @@ export function PerfilEditor({
           <h1 className="mt-1 text-2xl font-bold text-ink sm:text-3xl">Mi perfil</h1>
           <p className="mt-1 text-sm text-ink/55">{miembro.nombre} · {miembro.giro}</p>
         </div>
-        <a
-          href={`/${valores.usuario}`}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex h-10 items-center justify-center rounded-lg border border-black/10 px-4 text-sm font-semibold text-ink transition hover:bg-black/5"
-        >
-          Ver perfil público
-        </a>
+        <div className="flex flex-wrap gap-2">
+          <a
+            href={`/${valores.usuario}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-10 items-center justify-center rounded-lg border border-black/10 px-4 text-sm font-semibold text-ink transition hover:bg-black/5"
+          >
+            Ver perfil público
+          </a>
+          <button
+            type="button"
+            onClick={() => void compartirPerfil()}
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-bni px-4 text-sm font-semibold text-white transition hover:bg-bni-dark"
+          >
+            Compartir perfil
+          </button>
+        </div>
       </div>
 
       {estado && (
@@ -371,7 +403,7 @@ export function PerfilEditor({
             <Campo
               key={item.campo}
               etiqueta={item.etiqueta}
-              type="url"
+              type={item.type ?? "url"}
               value={valores[item.campo]}
               onChange={(valor) => actualizarValor(item.campo, valor, setValores)}
               onBlur={() => guardarCampo(item.campo)}
@@ -408,7 +440,7 @@ export function PerfilEditor({
         </div>
       </Seccion>
 
-      <Seccion titulo="Habilidades, objetivos e intereses">
+      <Seccion titulo="HORLI">
         <div className="grid gap-4 sm:grid-cols-2">
           {camposHORLI.map((item) => (
             <Campo
@@ -425,7 +457,7 @@ export function PerfilEditor({
         </div>
       </Seccion>
 
-      <Seccion titulo="Clientes y contactos">
+      <Seccion titulo="Clientes y Redes de contactos">
         <div className="grid gap-7 lg:grid-cols-3">
           <ListaPerfil
             tipo="clientes_buscados"
@@ -435,13 +467,13 @@ export function PerfilEditor({
           />
           <ListaPerfil
             tipo="contactos"
-            titulo="Contactos"
+            titulo="Redes de Contactos"
             itemsIniciales={listas.contactos.map((item) => item.contenido)}
             notificar={setEstado}
           />
           <ListaPerfil
             tipo="mejores_clientes"
-            titulo="Mejores clientes"
+            titulo="Mis mejores clientes/ Casos de éxito"
             itemsIniciales={listas.mejores_clientes.map((item) => item.contenido)}
             notificar={setEstado}
           />
@@ -475,7 +507,7 @@ function Campo({
   onChange: (valor: string) => void;
   onBlur: () => void;
   placeholder: string;
-  type?: "text" | "url";
+  type?: "text" | "url" | "tel";
   multiline?: boolean;
   maxLength?: number;
 }) {
@@ -593,6 +625,7 @@ function valoresDesdePerfil(perfil: PerfilMiembro): ValoresPerfil {
     instagram_url: perfil.instagram_url ?? "",
     linkedin_url: perfil.linkedin_url ?? "",
     pagina_web_url: perfil.pagina_web_url ?? "",
+    telefono_contacto: perfil.telefono_contacto ?? "",
     acerca_de_mi: perfil.acerca_de_mi ?? "",
     mascotas: perfil.mascotas ?? "",
     familia: perfil.familia ?? "",
@@ -656,11 +689,14 @@ async function optimizarLogoEmpresa(file: File): Promise<File> {
     if (!ctx) throw new Error("No se pudo procesar el logo.");
 
     ctx.drawImage(imagen, 0, 0, ancho, alto);
+    const conservarTransparencia = file.type === "image/png";
     const blob = await new Promise<Blob | null>((resolve) =>
-      canvas.toBlob(resolve, "image/jpeg", 0.82)
+      canvas.toBlob(resolve, conservarTransparencia ? "image/png" : "image/jpeg", 0.82)
     );
     if (!blob) throw new Error("No se pudo comprimir el logo.");
-    return new File([blob], "logo.jpg", { type: "image/jpeg" });
+    return new File([blob], conservarTransparencia ? "logo.png" : "logo.jpg", {
+      type: conservarTransparencia ? "image/png" : "image/jpeg",
+    });
   } finally {
     URL.revokeObjectURL(objectUrl);
   }

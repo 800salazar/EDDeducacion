@@ -6,6 +6,7 @@ export const CAMPOS_PERFIL_LIMITES = {
   instagram_url: 500,
   linkedin_url: 500,
   pagina_web_url: 500,
+  telefono_contacto: 40,
   acerca_de_mi: 500,
   mascotas: 180,
   familia: 180,

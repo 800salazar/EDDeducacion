@@ -96,6 +96,7 @@ create table if not exists public.perfiles_miembro (
   instagram_url            text,
   linkedin_url             text,
   pagina_web_url           text,
+  telefono_contacto        text check (char_length(telefono_contacto) <= 40),
   acerca_de_mi             text check (char_length(acerca_de_mi) <= 500),
   mascotas                 text check (char_length(mascotas) <= 180),
   familia                  text check (char_length(familia) <= 180),
@@ -122,13 +123,20 @@ create table if not exists public.perfiles_miembro (
 alter table public.perfiles_miembro
   add column if not exists logo_empresa_url text,
   add column if not exists logo_empresa_storage_path text,
-  add column if not exists color_principal text;
+  add column if not exists color_principal text,
+  add column if not exists telefono_contacto text;
 
 alter table public.perfiles_miembro
   drop constraint if exists perfiles_miembro_color_principal_check;
 alter table public.perfiles_miembro
   add constraint perfiles_miembro_color_principal_check
   check (color_principal is null or color_principal ~ '^#[0-9A-Fa-f]{6}$');
+
+alter table public.perfiles_miembro
+  drop constraint if exists perfiles_miembro_telefono_contacto_check;
+alter table public.perfiles_miembro
+  add constraint perfiles_miembro_telefono_contacto_check
+  check (telefono_contacto is null or char_length(telefono_contacto) <= 40);
 
 create index if not exists perfiles_miembro_usuario_idx
   on public.perfiles_miembro (usuario);
