@@ -85,9 +85,17 @@ function Seccion({
   color: string;
   children: React.ReactNode;
 }) {
+  const colorTexto = colorDeTextoContrastante(color);
   return (
     <section className="py-8">
-      <h2 className="mb-4 text-lg font-bold" style={{ color }}>{titulo}</h2>
+      <div className="mb-6 text-center">
+        <h2
+          className="inline-flex max-w-full items-center justify-center rounded-full px-5 py-2 text-center text-lg font-bold sm:text-xl"
+          style={{ backgroundColor: color, color: colorTexto }}
+        >
+          {titulo}
+        </h2>
+      </div>
       {children}
     </section>
   );
@@ -255,4 +263,13 @@ function iniciales(nombre: string): string {
     .slice(0, 2)
     .map((parte) => parte[0]?.toUpperCase() ?? "")
     .join("");
+}
+
+function colorDeTextoContrastante(color: string): "#14151a" | "#ffffff" {
+  const hex = color.replace("#", "");
+  if (!/^[0-9a-fA-F]{6}$/.test(hex)) return "#ffffff";
+
+  const [r, g, b] = [0, 2, 4].map((inicio) => parseInt(hex.slice(inicio, inicio + 2), 16));
+  const luminancia = (r * 299 + g * 587 + b * 114) / 1000;
+  return luminancia > 160 ? "#14151a" : "#ffffff";
 }
