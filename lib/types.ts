@@ -44,3 +44,53 @@ export type AlbumEstampa = {
   created_at: string;
   updated_at: string;
 };
+
+export type PerfilMiembro = {
+  id: string;
+  miembro_id: string;
+  usuario: string;
+  foto_url: string | null;
+  foto_storage_path: string | null;
+  logo_empresa_url: string | null;
+  logo_empresa_storage_path: string | null;
+  color_principal: string | null;
+  link_formato_uno_a_uno: string | null;
+  facebook_url: string | null;
+  instagram_url: string | null;
+  linkedin_url: string | null;
+  pagina_web_url: string | null;
+  acerca_de_mi: string | null;
+  mascotas: string | null;
+  familia: string | null;
+  pasatiempos: string | null;
+  otros_intereses: string | null;
+  ciudad: string | null;
+  trabajos_anteriores: string | null;
+  habilidades: string | null;
+  objetivos: string | null;
+  redes: string | null;
+  logros: string | null;
+  intereses: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PerfilListaTipo =
+  | "clientes_buscados"
+  | "contactos"
+  | "mejores_clientes";
+
+export type PerfilListaItem = {
+  id: string;
+  perfil_id: string;
+  tipo: PerfilListaTipo;
+  contenido: string;
+  orden: number;
+  created_at: string;
+};
+
+export type PerfilPublico = {
+  miembro: Miembro;
+  perfil: PerfilMiembro;
+  listas: Record<PerfilListaTipo, PerfilListaItem[]>;
+};

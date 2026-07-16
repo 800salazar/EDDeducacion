@@ -40,6 +40,13 @@ export default async function PortalPage({
           <div className="mt-7">
             <MiembroSelector miembros={miembros} error={error === "elige"} />
           </div>
+
+          <Link
+            href="/invitados"
+            className="mt-5 flex h-11 w-full items-center justify-center rounded-xl border border-black/10 text-sm font-semibold text-ink/70 transition hover:bg-black/5"
+          >
+            Soy invitado
+          </Link>
         </div>
 
         <p className="mt-6 text-center text-xs text-ink/40">
