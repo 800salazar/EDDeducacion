@@ -16,7 +16,7 @@ export default async function AdminLayout({
   return (
     <>
       <header className="sticky top-0 z-20 border-b border-black/5 bg-white/85 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-5">
+        <div className="mx-auto flex min-h-16 max-w-5xl flex-wrap items-center justify-between gap-2 px-5 py-2">
           <div className="flex items-center gap-3">
             <Link href="/admin">
               <Logo compact />
@@ -26,7 +26,7 @@ export default async function AdminLayout({
             </span>
           </div>
 
-          <nav className="flex items-center gap-1 text-sm sm:gap-2">
+          <nav className="flex max-w-full flex-wrap items-center gap-1 text-sm sm:gap-2">
             <Link
               href="/admin"
               className="rounded-lg px-3 py-2 font-medium text-ink/70 transition hover:bg-black/5 hover:text-ink"
@@ -38,6 +38,12 @@ export default async function AdminLayout({
               className="rounded-lg px-3 py-2 font-medium text-ink/70 transition hover:bg-black/5 hover:text-ink"
             >
               Miembros
+            </Link>
+            <Link
+              href="/admin/mentores"
+              className="rounded-lg px-3 py-2 font-medium text-ink/70 transition hover:bg-black/5 hover:text-ink"
+            >
+              Programa mentores
             </Link>
             <Link
               href="/inicio"

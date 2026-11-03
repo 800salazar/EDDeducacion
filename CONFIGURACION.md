@@ -116,6 +116,16 @@ vercel --prod                    # redeploy a producción
 
 ## Errores comunes
 
+- **Programa mentores no carga** → aplica la migración
+  `supabase/migrations/20261102224802_programa_mentores.sql` en el SQL Editor del
+  proyecto de EDD antes de abrir `/admin/mentores`. Crea dos tablas privadas y
+  el bucket `mentores-evidencias`; no requiere variables nuevas.
+- **La evidencia de mentoría no abre** → entra como admin. Las imágenes no son
+  públicas y su ruta exige una sesión admin válida en cada descarga.
+- **La imagen de mentoría es demasiado grande** → usa JPG, PNG o WebP de hasta
+  3 MB. Los formularios admiten 4 MB de cuerpo total para dejar margen sin
+  superar el límite de las funciones de Vercel.
+
 - **“Faltan NEXT_PUBLIC_SUPABASE_URL…”** → no llenaste `.env.local` (local) o no
   agregaste las variables en Vercel. En Vercel, recuerda **redeploy** después.
 - **Los miembros no cargan / 500** → ¿corriste `supabase/schema.sql`?

@@ -115,6 +115,55 @@ supabase/schema.sql        Esquema completo de la base de datos
 
 ## Seguridad
 
+### Programa mentores (solo administrador)
+
+En `/admin/mentores` puedes asignar un mentor y un mentoreado del listado de
+miembros activos. Cada pareja tiene siete semanas independientes, con una casilla
+de completado, notas opcionales (hasta 5,000 caracteres) y una imagen opcional
+(JPG, PNG o WebP de hasta 3 MB). Un mentor puede participar en varias parejas.
+La pareja exacta no se duplica y una persona no puede ser su propio mentor.
+
+El módulo permite buscar por cualquiera de los dos nombres, paginar, marcar y
+desmarcar semanas en la tabla, consultar el detalle y eliminar una pareja con
+confirmación. Eliminar la pareja borra su seguimiento y sus imágenes; no borra
+a los miembros. Un miembro que participa en mentorías no puede borrarse
+accidentalmente: la base bloquea esa eliminación para conservar el historial.
+
+**Instalación en un proyecto existente:** ejecuta únicamente
+[`supabase/migrations/20261102224802_programa_mentores.sql`](supabase/migrations/20261102224802_programa_mentores.sql)
+en el SQL Editor del proyecto Supabase de EDD. Para instalaciones nuevas, el
+esquema completo `supabase/schema.sql` ya incluye el módulo.
+
+Las tablas `mentorias` y `mentorias_semanas` tienen RLS y no conceden acceso a
+`anon` ni `authenticated`. El servidor usa `service_role` después de comprobar
+la cookie admin en cada lectura, acción y descarga. Las evidencias se guardan
+en el bucket **privado** `mentores-evidencias` y se sirven por una ruta admin con
+`Cache-Control: private, no-store`; nunca se crean URLs públicas ni firmadas.
+No utiliza el bucket público `media`, no envía notificaciones y no añade datos
+a perfiles, directorios o vistas de miembros. El acceso corresponde a cualquier
+persona que tenga la contraseña actual de `/admin`.
+
+Las siete semanas nacen con `false` en una transacción al crear la pareja.
+Completar una semana no requiere notas, imagen ni semanas previas. Las casillas
+de la tabla solo actualizan el booleano, conservando notas e imágenes. El detalle
+comprueba `updated_at` para evitar sobrescribir una edición de otra ventana.
+La nueva imagen se sube antes de guardar y la anterior se elimina solo cuando
+la actualización se confirma. Si una subida queda sin guardar, se intenta
+eliminar; fallos de limpieza se registran en el servidor para revisión.
+
+Validación local: `npm run lint`, `npx tsc --noEmit`, `node --test tests/mentores.test.mjs`
+y `npm run build`. La compilación requiere acceso a Google Fonts por la fuente
+Inter existente. Después de aplicar la migración, verificar en EDD: varias
+parejas del mismo mentor, notas y evidencia por semana, búsquedas, reemplazo y
+eliminación de imagen, y rechazo de acceso sin sesión a la sección y a una URL
+directa de evidencia.
+
+Prueba SQL transaccional (sin conservar datos de prueba): ejecutar
+`supabase/tests/mentores.sql` después de la migración. Comprueba permisos, RLS,
+bucket privado, semanas iniciales, restricciones y conservación del historial.
+
+### Acceso general
+
 - Los miembros leen con la **anon key** y RLS permite **solo SELECT**.
 - Toda escritura va por el servidor con **service_role** (nunca llega al
   navegador) y cada Server Action verifica que seas admin.

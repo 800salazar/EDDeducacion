@@ -284,6 +284,9 @@ export async function eliminarMiembro(formData: FormData) {
   if (!id) throw new Error("Falta id");
   const supabase = createAdminClient();
   const { error } = await supabase.from("miembros").delete().eq("id", id);
+  if (error?.code === "23503" && error.message.includes("mentorias")) {
+    redirect("/admin/miembros?error=mentorias");
+  }
   if (error) throw error;
 
   refrescarPublico();

@@ -12,7 +12,10 @@ import type { Miembro } from "@/lib/types";
 const inputCls =
   "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm text-ink shadow-sm outline-none transition focus:border-bni focus:ring-2 focus:ring-bni/20";
 
-export default async function AdminMiembrosPage() {
+export default async function AdminMiembrosPage({ searchParams }: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
   const miembros = await listarMiembrosAdmin();
 
   return (
@@ -31,6 +34,13 @@ export default async function AdminMiembrosPage() {
         <span className="font-medium">giro</span>. El sistema asigna id/orden,
         categoría derivada y estado activo automáticamente.
       </p>
+
+      {error === "mentorias" ? (
+        <p role="alert" className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          Este miembro participa en el programa mentores. Para conservar su seguimiento,
+          primero revisa sus parejas en <Link href="/admin/mentores" className="font-semibold underline">Programa mentores</Link> antes de eliminarlo.
+        </p>
+      ) : null}
 
       {/* Alta */}
       <section className="mt-6 rounded-2xl border border-dashed border-black/20 bg-white p-5 shadow-sm">
