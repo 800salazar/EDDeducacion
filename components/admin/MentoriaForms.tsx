@@ -19,24 +19,39 @@ export function NuevaMentoria({ miembros }: { miembros: MiembroMentoria[] }) {
   const [estado, action, pendiente] = useActionState(crearMentoria, inicial);
   const [mentor, setMentor] = useState("");
   const [mentoreado, setMentoreado] = useState("");
+  const [buscarMentor, setBuscarMentor] = useState("");
+  const [buscarMentoreado, setBuscarMentoreado] = useState("");
+  const filtrar = (busqueda: string, seleccionado: string) => {
+    const normalizar = (valor: string) => valor.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const palabras = normalizar(busqueda).trim().split(/\s+/).filter(Boolean);
+    return miembros.filter((m) => m.id === seleccionado || palabras.every((p) => normalizar(m.nombre).includes(p)));
+  };
   return <details className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
     <summary className="cursor-pointer text-sm font-semibold">+ Nueva pareja</summary>
     <form action={action} className="mt-5 grid gap-4 sm:grid-cols-2">
-      <label className="space-y-2 text-sm font-medium">Mentor
-        <select name="mentor_id" required className={input} value={mentor} onChange={(e) => {
+      <div className="space-y-2 text-sm font-medium">
+        <label htmlFor="buscar-mentor" className="block">Buscar mentor</label>
+        <input id="buscar-mentor" type="search" className={input} placeholder="Escribe un nombre…" value={buscarMentor} onChange={(e) => setBuscarMentor(e.target.value)} />
+        <label htmlFor="mentor-id" className="block">Mentor</label>
+        <select id="mentor-id" name="mentor_id" required className={input} value={mentor} onChange={(e) => {
           setMentor(e.target.value);
           if (e.target.value === mentoreado) setMentoreado("");
         }}>
           <option value="">Selecciona un miembro</option>
-          {miembros.map((m) => <option key={m.id} value={m.id}>{m.nombre}</option>)}
+          {filtrar(buscarMentor, mentor).map((m) => <option key={m.id} value={m.id}>{m.nombre}</option>)}
         </select>
-      </label>
-      <label className="space-y-2 text-sm font-medium">Mentoreado
-        <select name="mentoreado_id" required className={input} value={mentoreado} onChange={(e) => setMentoreado(e.target.value)}>
+        {filtrar(buscarMentor, "").length === 0 && <p className="text-xs text-ink/55">No encontramos miembros con ese nombre.</p>}
+      </div>
+      <div className="space-y-2 text-sm font-medium">
+        <label htmlFor="buscar-mentoreado" className="block">Buscar mentoreado</label>
+        <input id="buscar-mentoreado" type="search" className={input} placeholder="Escribe un nombre…" value={buscarMentoreado} onChange={(e) => setBuscarMentoreado(e.target.value)} />
+        <label htmlFor="mentoreado-id" className="block">Mentoreado</label>
+        <select id="mentoreado-id" name="mentoreado_id" required className={input} value={mentoreado} onChange={(e) => setMentoreado(e.target.value)}>
           <option value="">Selecciona un miembro</option>
-          {miembros.map((m) => <option key={m.id} value={m.id} disabled={m.id === mentor}>{m.nombre}</option>)}
+          {filtrar(buscarMentoreado, mentoreado).map((m) => <option key={m.id} value={m.id} disabled={m.id === mentor}>{m.nombre}</option>)}
         </select>
-      </label>
+        {filtrar(buscarMentoreado, "").length === 0 && <p className="text-xs text-ink/55">No encontramos miembros con ese nombre.</p>}
+      </div>
       <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
         <button className={boton} disabled={pendiente || miembros.length < 2}>
           {pendiente ? "Creando…" : "Crear pareja"}
